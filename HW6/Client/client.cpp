@@ -35,27 +35,17 @@ int main()
 
     // Обмін повідомленнями
     char buffer[1024];
-    while (true)
-    {
-        // Відправка повідомлення серверу
-        std::string msg;
-        std::cout << "Your message to Server: ";
-        std::getline(std::cin, msg);
+    for (int i = 0; i < 100; i++)
+    { // Відправка 100 повідомлень 
 
-        if (msg.empty())  
-        {
-            std::cout << "Exiting...\n";
-            closesocket(Connection);  // Клієнт закриває сокет
-        }
-
-        // Відправка довжини повідомлення
+        // Відправлення текстового повідомлення
+        std::string msg = "Message #" + std::to_string(i + 1);
         uint32_t msg_length = msg.size();
-        send(Connection, (char*)&msg_length, sizeof(msg_length), 0);
 
+        send(Connection, (char*)&msg_length, sizeof(msg_length), 0); // Відправка довжини повідомлення
         send(Connection, msg.c_str(), msg.size(), 0); // Відправка самого повідомлення
-
+        
         // Прийом відповіді від сервера (за бінарним протоколом)
-
         // Прийом довжини повідомлення
         uint32_t ans_length;
         int read_len = recv(Connection, (char*)&ans_length, sizeof(ans_length), 0);
@@ -67,18 +57,19 @@ int main()
 
         // Прийом самого повідомлення
         int read_ans = recv(Connection, buffer, ans_length, 0); 
-
         if (read_ans <= 0)
         {
             std::cout << "The connection to the server is closed.\n";
             break;
         }
 
-        buffer[read_ans] = '\0'; // Завершення рядка
-        std::cout << "Server: " << buffer << std::endl;
+        // Перетворюємо отриману відповідь на ціле число
+        int message_counter;
+        memcpy(&message_counter, buffer, sizeof(message_counter));
+
+        std::cout << "Server: " << message_counter << std::endl; 
     }
 
-    // Закриття сокета
     WSACleanup();
 
     return 0;
