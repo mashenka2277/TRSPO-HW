@@ -45,10 +45,11 @@ int main()
 
     // Обмін повідомленнями
     char buffer[1024];
-    while (true)
-    {
-        // Прийом повідомлення від клієнта (за бінарним протоколом)
-
+    int message_counter = 0;  // Лічильник отриманих повідомлень
+    for (int i = 0; i < 100; ++i) 
+    { // Прийом 100 повідомлень
+        
+        // Прийом текстового повідомлення від клієнта
         // Прийом довжини повідомлення
         uint32_t msg_length;
         int read_len = recv(newConnection, (char*)&msg_length, sizeof(msg_length), 0);
@@ -70,26 +71,20 @@ int main()
         buffer[read_msg] = '\0'; // Завершення рядка
         std::cout << "Client: " << buffer << std::endl;
 
-        // Відправка відповіді клієнту
-        std::string ans;
-        std::cout << "Your message to Client: ";
-        std::getline(std::cin, ans);
-
-        if (ans.empty())  
-        {
-            std::cout << "Exiting...\n";
-            closesocket(newConnection);  // Сервер закриває сокет з клієнтом
-        }
+        // Відправка лічильника отриманих повідомлень у відповідь
+        message_counter++;
 
         // Відправка довжини повідомлення
-        uint32_t ans_len = ans.size();
+        uint32_t ans_len = sizeof(message_counter);
         send(newConnection, (char*)&ans_len, sizeof(ans_len), 0);
 
-        send(newConnection, ans.c_str(), ans.size(), 0); // Відправка самого повідомлення
+        send(newConnection, (char*)&message_counter, sizeof(message_counter), 0); // Відправка самого повідомлення
+    
     }
 
     // Закриття сокетів
     closesocket(sListen);
+    closesocket(newConnection);
     WSACleanup();
 
     return 0;
