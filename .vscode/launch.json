@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+    {
+        "name": "C++ Launch Server",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/HW7/Server/server",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/HW7/Server",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+        "miDebuggerPath": "/usr/bin/gdb",
+        "preLaunchTask": "C/C++: g++.exe build active file",
+        "miDebuggerArgs": "",
+        "visualizerFile": "${workspaceFolder}/.vscode/gdb/miDebuggerArgs.json"
+      }
+    ]
+}
